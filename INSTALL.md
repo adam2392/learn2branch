@@ -93,3 +93,14 @@ pip install .
 ```
 conda install tensorflow-gpu=1.12.0
 ```
+
+# General Install
+
+    conda create -n learn2branch python=3.6
+    conda install cython
+    conda install tensorflow-gpu=1.12.0
+    pip install numpy scikit-learn scipy tqdm natsort joblib
+    # LambdaMART
+    pip install git+https://github.com/jma127/pyltr@78fa0ebfef67d6594b8415aa5c6136e30a5e3395  
+    pip install git+https://github.com/ds4dm/PySCIPOpt.git@ml-branching
+    
