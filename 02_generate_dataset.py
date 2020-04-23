@@ -321,7 +321,6 @@ if __name__ == '__main__':
     exploration_strategy = 'pscost'
     node_record_prob = 0.05
     time_limit = 3600
-    raise Exception('hi')
 
     if args.problem == 'setcover':
         instances_train = glob.glob('data/instances/setcover/train_500r_1000c_0.05d/*.lp')
