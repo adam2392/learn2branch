@@ -178,7 +178,7 @@ if __name__ == '__main__':
     if args.gpu == -1:
         os.environ['CUDA_VISIBLE_DEVICES'] = ''
     else:
-        os.environ['CUDA_VISIBLE_DEVICES'] = f'{args.gpu}'
+        os.environ['CUDA_VISIBLE_DEVICES'] = '{}'.format(args.gpu)
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     tf.enable_eager_execution(config)
@@ -188,9 +188,8 @@ if __name__ == '__main__':
     tf.set_random_seed(rng.randint(np.iinfo(int).max))
 
     ### SET-UP DATASET ###
-    train_files = list(pathlib.Path(f'data/samples/{problem_folder}/train').glob('sample_*.pkl'))
-    valid_files = list(pathlib.Path(f'data/samples/{problem_folder}/valid').glob('sample_*.pkl'))
-
+    train_files = list(pathlib.Path('data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
+    valid_files = list(pathlib.Path('data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
 
     def take_subset(sample_files, cands_limit):
         nsamples = 0
@@ -232,7 +231,7 @@ if __name__ == '__main__':
     pretrain_data = pretrain_data.prefetch(1)
 
     ### MODEL LOADING ###
-    sys.path.insert(0, os.path.abspath(f'models/{args.model}'))
+    sys.path.insert(0, os.path.abspath('models/{}'.format(args.model)))
     import model
     importlib.reload(model)
     model = model.GCNPolicy()
