@@ -120,6 +120,11 @@ def extract_state(model, buffer=None):
     edge_feat_indices = np.vstack([edge_row_idxs, edge_col_idxs])
     edge_feat_vals = np.concatenate(list(edge_feats.values()), axis=-1)
 
+    # Get adjacency spectral embedding (ASE) of graph
+    adj = sp.coo_matrix((data, (edge_row_idxs, edge_col_idxs)), shape=(m + n, m + n))
+    ase = AdjacencySpectralEmbed(n_components=3)
+    Xhat = ase.fit_transform(adj.toarray())
+
     edge_features = {
         "names": edge_feat_names,
         "indices": edge_feat_indices,
