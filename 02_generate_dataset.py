@@ -348,9 +348,9 @@ if __name__ == '__main__':
         time_limit = 600
 
     elif args.problem == 'tsp':
-        train_size = 1000
-        valid_size = 200
-        test_size = 200
+        train_size = 5000
+        valid_size = 1000
+        test_size = 1000
         instances_train = glob.glob('data/instances/tsp/train/*.lp')
         instances_valid = glob.glob('data/instances/tsp/valid/*.lp')
         instances_test = glob.glob('data/instances/tsp/test/*.lp')
