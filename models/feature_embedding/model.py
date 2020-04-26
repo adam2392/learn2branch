@@ -104,7 +104,7 @@ class PreNormLayer(K.layers.Layer):
 
     def stop_updates(self):
         """
-        Ends pre-training for that layer, and fixes the layers's parameters.        
+        Ends pre-training for that layer, and fixes the layers's parameters.
         """
         assert self.count > 0
         if self.shift is not None:
