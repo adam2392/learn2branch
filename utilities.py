@@ -123,7 +123,8 @@ def extract_state(model, buffer=None):
     # Get adjacency spectral embedding (ASE) of graph
     adj = sp.coo_matrix((data, (edge_row_idxs, edge_col_idxs)), shape=(m + n, m + n))
     ase = AdjacencySpectralEmbed(n_components=3)
-    Xhat = ase.fit_transform(adj.toarray())
+    x_hat = ase.fit_transform(adj.toarray() + adj.toarray().T)
+    v_embed, c_embed = x_hat[has_lhs, :], x_hat[has_lhs, :]
 
     edge_features = {
         "names": edge_feat_names,
@@ -157,6 +158,10 @@ def extract_state(model, buffer=None):
     col_feats["sol_val"] = s["col"]["solvals"].reshape(-1, 1)
     col_feats["inc_val"] = s["col"]["incvals"].reshape(-1, 1)
     col_feats["avg_inc_val"] = s["col"]["avgincvals"].reshape(-1, 1)
+
+    col_feats["x1"] = v_embed[:, 0].reshape(-1, 1)
+    col_feats["x2"] = v_embed[:, 1].reshape(-1, 1)
+    col_feats["x3"] = v_embed[:, 2].reshape(-1, 1)
 
     col_feat_names = [
         [k,] if v.shape[1] == 1 else [f"{k}_{i}" for i in range(v.shape[1])]
@@ -198,24 +203,14 @@ def extract_state(model, buffer=None):
         (s["row"]["ages"][has_lhs], s["row"]["ages"][has_rhs])
     ).reshape(-1, 1) / (s["stats"]["nlps"] + 5)
 
-    # # redundant with is_tight
-    # tmp = s['row']['basestats']  # LOWER BASIC UPPER ZERO
-    # tmp[s['row']['lhss'] == s['row']['rhss']] = 4  # LOWER == UPPER for equality constraints
-    # tmp_l = tmp[has_lhs]
-    # tmp_l[tmp_l == 2] = 1  # LHS UPPER -> BASIC
-    # tmp_l[tmp_l == 4] = 2  # EQU UPPER -> UPPER
-    # tmp_l[tmp_l == 0] = 2  # LHS LOWER -> UPPER
-    # tmp_r = tmp[has_rhs]
-    # tmp_r[tmp_r == 0] = 1  # RHS LOWER -> BASIC
-    # tmp_r[tmp_r == 4] = 2  # EQU LOWER -> UPPER
-    # tmp = np.concatenate((tmp_l, tmp_r)) - 1  # BASIC UPPER ZERO
-    # row_feats['basis_status'] = np.zeros((len(has_lhs) + len(has_rhs), 3))
-    # row_feats['basis_status'][np.arange(len(has_lhs) + len(has_rhs)), tmp] = 1
-
     tmp = s["row"]["dualsols"] / (row_norms * obj_norm)
     row_feats["dualsol_val_normalized"] = np.concatenate(
         (-tmp[has_lhs], +tmp[has_rhs])
     ).reshape(-1, 1)
+
+    row_feats["x1"] = c_embed[:, 0].reshape(-1, 1)
+    row_feats["x2"] = c_embed[:, 1].reshape(-1, 1)
+    row_feats["x3"] = c_embed[:, 2].reshape(-1, 1)
 
     row_feat_names = [
         [k,] if v.shape[1] == 1 else [f"{k}_{i}" for i in range(v.shape[1])]
