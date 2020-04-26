@@ -339,9 +339,9 @@ class GCNPolicy(BaseModel):
         super().__init__()
 
         self.emb_size = 64
-        self.cons_nfeats = 5
+        self.cons_nfeats = 5 + 3
         self.edge_nfeats = 1
-        self.var_nfeats = 19
+        self.var_nfeats = 19 + 3
 
         self.activation = K.activations.relu
         self.initializer = K.initializers.Orthogonal()
