@@ -297,7 +297,7 @@ if __name__ == '__main__':
     parser.add_argument(
         'problem',
         help='MILP instance type to process.',
-        choices=['setcover', 'cauctions', 'facilities', 'indset'],
+        choices=['setcover', 'cauctions', 'facilities', 'indset', 'tsp'],
     )
     parser.add_argument(
         '-s', '--seed',
@@ -315,9 +315,9 @@ if __name__ == '__main__':
 
     print(f"seed {args.seed}")
 
-    train_size = 100000
-    valid_size = 20000
-    test_size = 20000
+    train_size = 100000 // 5
+    valid_size = 20000 // 5
+    test_size = 20000 // 5
     exploration_strategy = 'pscost'
     node_record_prob = 0.05
     time_limit = 3600
@@ -346,6 +346,15 @@ if __name__ == '__main__':
         instances_test = glob.glob('data/instances/facilities/test_100_100_5/*.lp')
         out_dir = 'data/samples/facilities/100_100_5'
         time_limit = 600
+
+    elif args.problem == 'tsp':
+        train_size = 5000
+        valid_size = 1000
+        test_size = 1000
+        instances_train = glob.glob('data/instances/tsp/train/*.lp')
+        instances_valid = glob.glob('data/instances/tsp/valid/*.lp')
+        instances_test = glob.glob('data/instances/tsp/test/*.lp')
+        out_dir = 'data/samples/tsp/'
 
     else:
         raise NotImplementedError
