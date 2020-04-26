@@ -1,9 +1,12 @@
-import os
 import argparse
+import os
+from itertools import chain, combinations
+
 import numpy as np
 import scipy.sparse
+
 import utilities
-from itertools import combinations
+from read_tsplib import read_tsplib
 
 
 class Graph:
@@ -514,12 +517,79 @@ def generate_capacited_facility_location(random, filename, n_customers, n_facili
         file.write("".join([f" y_{j+1}" for j in range(n_facilities)]))
 
 
+def powerset(iterable):
+    "powerset([1,2,3]) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3) (1,2,3)"
+    s = list(iterable)
+    return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
+
+
+def generate_real_tsp(V, c, filename):
+    """
+    Use TSPLIB symmetric TSP data to generate TSP instances following formulation in section 3.1 of
+        Rajesh Matai, Surya Prakash Singh, and Murari Lal Mittal
+        Traveling Salesman Problem: An Overview of Applications, Formulations, and Solution Approaches (2010).
+        IntechOpen, doi: 10.5772/12909.
+
+    Saves it as a CPLEX LP file.
+
+    Parameters
+    ----------
+    V : iterable
+        Sequence of integer node labels, usually {1,..,n}.
+    c: dictionary of type {tuple[int, int]: float}
+        Dictionary of edges to corresponding distances.
+    filename : str
+        Path to the file to save.
+    """
+    with open(filename, 'w') as file:
+        file.write("minimize\nobj:")
+        file.write("".join([f" +{c[i, j]} x_{i}_{j}" for i in V for j in V if i < j]))
+
+        file.write("\n\nsubject to\n")
+        for k in V:
+            file.write("".join([f" +x_{i}_{k}" for i in V if i < k]) + "".join([f" +x_{k}_{j}" for j in V if j > k]) + " = 2\n")
+        
+        subtours = list(powerset(V))
+        for S in subtours:
+            if not (3 <= len(S) <= len(V)-3):
+                continue
+            file.write("".join([f" +x_{i}_{j}" for i in V for j in V if i < j]) + f" <= {len(S)-1}\n")
+
+        file.write("\nbinary\n")
+        file.write("".join([f" x_{i}_{j}" for i in V for j in V if i < j]))
+
+
+def generate_tsp(rng, filename, nnodes):
+    """
+    Generate a Traveling Salesman Problem following formulation in section 3.1 of
+        Rajesh Matai, Surya Prakash Singh, and Murari Lal Mittal
+        Traveling Salesman Problem: An Overview of Applications, Formulations, and Solution Approaches (2010).
+        IntechOpen, doi: 10.5772/12909.
+
+    Saves it as a CPLEX LP file.
+
+    Parameters
+    ----------
+    V : iterable
+        Sequence of integer node labels, usually {1,..,n}.
+    c: dictionary of type {tuple[int, int]: float}
+        Dictionary of edges to corresponding distances.
+    filename : str
+        Path to the file to save.
+    """
+    V = range(1,nnodes+1)
+    x = rng.rand(nnodes)
+    y = rng.rand(nnodes)
+    c = {(i,j): np.linalg.norm([x[i-1]-x[j-1], y[i-1]-y[j-1]]) for i in V for j in V if i < j}
+    generate_real_tsp(V, c, filename)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'problem',
         help='MILP instance type to process.',
-        choices=['setcover', 'cauctions', 'facilities', 'indset'],
+        choices=['setcover', 'cauctions', 'facilities', 'indset', 'real-tsp', 'tsp'],
     )
     parser.add_argument(
         '-s', '--seed',
@@ -836,5 +906,88 @@ if __name__ == '__main__':
         for filename, ncs, nfs, r in zip(filenames, ncustomerss, nfacilitiess, ratios):
             print(f"  generating file {filename} ...")
             generate_capacited_facility_location(rng, filename, n_customers=ncs, n_facilities=nfs, ratio=r)
+
+        print("done.")
+
+    elif args.problem == 'real-tsp':
+        tsplib_files = os.listdir('data/real-tsp/')
+
+        if not tsplib_files:
+            raise FileNotFoundError('No files in directory tsp directory.')
+
+        lp_dir = 'data/instances/real-tsp/'
+        if not os.path.exists(lp_dir):
+            os.makedirs(lp_dir)
+
+        for i, filename in enumerate(tsplib_files):
+            instance_name = f'instance_{i+1}.lp'
+            V, c, _, _ = read_tsplib(f'data/tsp/{filename}')
+            
+            print(f"  generating file {instance_name} ...")
+            generate_real_tsp(V, c, instance_name)
+
+        print("done.")
+
+    elif args.problem == 'tsp':
+        number_of_nodes = 100
+        nnodess = []
+        filenames = []
+
+        # train instances
+        n = 10000
+        lp_dir = f'data/instances/tsp/train_{number_of_nodes}'
+        print(f"{n} instances in {lp_dir}")
+        os.makedirs(lp_dir)
+        filenames.extend([os.path.join(lp_dir, f'instance_{i+1}.lp') for i in range(n)])
+        nnodess.extend([number_of_nodes] * n)
+
+        # validation instances
+        n = 2000
+        lp_dir = f'data/instances/tsp/valid_{number_of_nodes}'
+        print(f"{n} instances in {lp_dir}")
+        os.makedirs(lp_dir)
+        filenames.extend([os.path.join(lp_dir, f'instance_{i+1}.lp') for i in range(n)])
+        nnodess.extend([number_of_nodes] * n)
+
+        # small transfer instances
+        n = 100
+        number_of_nodes = 100
+        lp_dir = f'data/instances/tsp/transfer_{number_of_nodes}'
+        print(f"{n} instances in {lp_dir}")
+        os.makedirs(lp_dir)
+        filenames.extend([os.path.join(lp_dir, f'instance_{i+1}.lp') for i in range(n)])
+        nnodess.extend([number_of_nodes] * n)
+
+        # medium transfer instances
+        n = 100
+        number_of_nodes = 250
+        lp_dir = f'data/instances/tsp/transfer_{number_of_nodes}'
+        print(f"{n} instances in {lp_dir}")
+        os.makedirs(lp_dir)
+        filenames.extend([os.path.join(lp_dir, f'instance_{i+1}.lp') for i in range(n)])
+        nnodess.extend([number_of_nodes] * n)
+
+        # big transfer instances
+        n = 100
+        number_of_nodes = 500
+        lp_dir = f'data/instances/tsp/transfer_{number_of_nodes}'
+        print(f"{n} instances in {lp_dir}")
+        os.makedirs(lp_dir)
+        filenames.extend([os.path.join(lp_dir, f'instance_{i+1}.lp') for i in range(n)])
+        nnodess.extend([number_of_nodes] * n)
+
+        # test instances
+        n = 2000
+        number_of_nodes = 100
+        lp_dir = f'data/instances/tsp/test_{number_of_nodes}'
+        print(f"{n} instances in {lp_dir}")
+        os.makedirs(lp_dir)
+        filenames.extend([os.path.join(lp_dir, f'instance_{i+1}.lp') for i in range(n)])
+        nnodess.extend([number_of_nodes] * n)
+
+        # actually generate the instances
+        for filename, nnodes in zip(filenames, nnodess):
+            print(f"  generating file {filename} ...")
+            generate_tsp(rng, filename, nnodes=nnodes)
 
         print("done.")
