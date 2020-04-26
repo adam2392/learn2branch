@@ -154,31 +154,31 @@ if __name__ == '__main__':
     }
     problem_folder = problem_folders[args.problem]
 
-    running_dir = f"trained_models/{args.problem}/{args.model}/{args.seed}"
+    running_dir = "trained_models/{}/{}/{}".format(args.problem, args.model, args.seed)
 
     os.makedirs(running_dir)
 
     ### LOG ###
     logfile = os.path.join(running_dir, 'log.txt')
 
-    log(f"max_epochs: {max_epochs}", logfile)
-    log(f"epoch_size: {epoch_size}", logfile)
-    log(f"batch_size: {batch_size}", logfile)
-    log(f"pretrain_batch_size: {pretrain_batch_size}", logfile)
-    log(f"valid_batch_size : {valid_batch_size }", logfile)
-    log(f"lr: {lr}", logfile)
-    log(f"patience : {patience }", logfile)
-    log(f"early_stopping : {early_stopping }", logfile)
-    log(f"top_k: {top_k}", logfile)
-    log(f"problem: {args.problem}", logfile)
-    log(f"gpu: {args.gpu}", logfile)
-    log(f"seed {args.seed}", logfile)
+    # log(f"max_epochs: {max_epochs}", logfile)
+    # log(f"epoch_size: {epoch_size}", logfile)
+    # log(f"batch_size: {batch_size}", logfile)
+    # log(f"pretrain_batch_size: {pretrain_batch_size}", logfile)
+    # log(f"valid_batch_size : {valid_batch_size }", logfile)
+    # log(f"lr: {lr}", logfile)
+    # log(f"patience : {patience }", logfile)
+    # log(f"early_stopping : {early_stopping }", logfile)
+    # log(f"top_k: {top_k}", logfile)
+    # log(f"problem: {args.problem}", logfile)
+    # log(f"gpu: {args.gpu}", logfile)
+    # log(f"seed {args.seed}", logfile)
 
     ### NUMPY / TENSORFLOW SETUP ###
     if args.gpu == -1:
         os.environ['CUDA_VISIBLE_DEVICES'] = ''
     else:
-        os.environ['CUDA_VISIBLE_DEVICES'] = f'{args.gpu}'
+        os.environ['CUDA_VISIBLE_DEVICES'] = '{}'.format(args.gpu)
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     tf.enable_eager_execution(config)
@@ -188,9 +188,8 @@ if __name__ == '__main__':
     tf.set_random_seed(rng.randint(np.iinfo(int).max))
 
     ### SET-UP DATASET ###
-    train_files = list(pathlib.Path(f'data/samples/{problem_folder}/train').glob('sample_*.pkl'))
-    valid_files = list(pathlib.Path(f'data/samples/{problem_folder}/valid').glob('sample_*.pkl'))
-
+    train_files = list(pathlib.Path('data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
+    valid_files = list(pathlib.Path('data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
 
     def take_subset(sample_files, cands_limit):
         nsamples = 0
@@ -204,7 +203,7 @@ if __name__ == '__main__':
             nsamples += 1
 
             if ncands >= cands_limit:
-                log(f"  dataset size limit reached ({cands_limit} candidate variables)", logfile)
+                log("  dataset size limit reached ({} candidate variables)".format(cands_limit), logfile)
                 break
 
         return sample_files[:nsamples]
@@ -212,10 +211,10 @@ if __name__ == '__main__':
 
     if train_ncands_limit < np.inf:
         train_files = take_subset(rng.permutation(train_files), train_ncands_limit)
-    log(f"{len(train_files)} training samples", logfile)
+    log("{} training samples".format(len(train_files)), logfile)
     if valid_ncands_limit < np.inf:
         valid_files = take_subset(valid_files, valid_ncands_limit)
-    log(f"{len(valid_files)} validation samples", logfile)
+    log("{} validation samples".format(len(valid_files)), logfile)
 
     train_files = [str(x) for x in train_files]
     valid_files = [str(x) for x in valid_files]
@@ -232,7 +231,7 @@ if __name__ == '__main__':
     pretrain_data = pretrain_data.prefetch(1)
 
     ### MODEL LOADING ###
-    sys.path.insert(0, os.path.abspath(f'models/{args.model}'))
+    sys.path.insert(0, os.path.abspath('models/{}'.format(args.model)))
     import model
     importlib.reload(model)
     model = model.GCNPolicy()
@@ -242,14 +241,14 @@ if __name__ == '__main__':
     optimizer = tf.train.AdamOptimizer(learning_rate=lambda: lr)  # dynamic LR trick
     best_loss = np.inf
     for epoch in range(max_epochs + 1):
-        log(f"EPOCH {epoch}...", logfile)
+        log("EPOCH {}...".format(epoch), logfile)
         epoch_loss_avg = tfe.metrics.Mean()
         epoch_accuracy = tfe.metrics.Accuracy()
 
         # TRAIN
         if epoch == 0:
             n = pretrain(model=model, dataloader=pretrain_data)
-            log(f"PRETRAINED {n} LAYERS", logfile)
+            log("PRETRAINED {} LAYERS".format(n), logfile)
             # model compilation
             model.call = tfe.defun(model.call, input_signature=model.input_signature)
         else:
@@ -260,27 +259,30 @@ if __name__ == '__main__':
             train_data = train_data.map(load_batch_tf)
             train_data = train_data.prefetch(1)
             train_loss, train_kacc = process(model, train_data, top_k, optimizer)
-            log(f"TRAIN LOSS: {train_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, train_kacc)]), logfile)
+
+            train_loss_str = "".join([" acc@{}: {:0.3f}".format(k, acc) for k, acc in zip(top_k, train_kacc)])
+            log("TRAIN LOSS: {:0.3f} {}".format(train_loss, train_loss_str), logfile)
 
         # TEST
         valid_loss, valid_kacc = process(model, valid_data, top_k, None)
-        log(f"VALID LOSS: {valid_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, valid_kacc)]), logfile)
+        # log(f"VALID LOSS: {valid_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, valid_kacc)]), logfile)
 
         if valid_loss < best_loss:
             plateau_count = 0
             best_loss = valid_loss
             model.save_state(os.path.join(running_dir, 'best_params.pkl'))
-            log(f"  best model so far", logfile)
+            log("  Saving best model so far", logfile)
         else:
             plateau_count += 1
             if plateau_count % early_stopping == 0:
-                log(f"  {plateau_count} epochs without improvement, early stopping", logfile)
+                log("  {} epochs without improvement, early stopping".format(plateau_count), logfile)
                 break
             if plateau_count % patience == 0:
                 lr *= 0.2
-                log(f"  {plateau_count} epochs without improvement, decreasing learning rate to {lr}", logfile)
+                log("  {} epochs without improvement, decreasing learning rate to {}".format(plateau_count, lr), logfile)
 
     model.restore_state(os.path.join(running_dir, 'best_params.pkl'))
     valid_loss, valid_kacc = process(model, valid_data, top_k, None)
-    log(f"BEST VALID LOSS: {valid_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, valid_kacc)]), logfile)
+    valid_loss_str = "".join([" acc@{}: {:0.3f}".format(k, acc) for k, acc in zip(top_k, valid_kacc)])
+    log("BEST VALID LOSS: {:0.3f} {}".format(valid_loss, valid_loss_str), logfile)
 

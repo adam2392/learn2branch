@@ -5,7 +5,7 @@ Set-up a desired installation path for SCIP / SoPlex (e.g., `/opt/scip`):
 export SCIPOPTDIR='/opt/scip'
 ```
 
-## SoPlex
+c
 
 SoPlex 4.0.1 (free for academic uses)
 
@@ -93,3 +93,41 @@ pip install .
 ```
 conda install tensorflow-gpu=1.12.0
 ```
+
+# General Install (MARCC)
+Note MARCC can be buggy due to lack of sudo. So we put SCIPOPTDIR in a local directory attached to a user. We also need the cmake module
+because it is not by default avail. for all users. 
+   
+    # load modules needed
+    ml cmake
+    
+    # create scip directory in code to build
+    cd ~/code/
+    mkdir scip/
+    
+    # pull repo down
+    git clone https://github.com/adam2392/learn2branch.git
+    cd learn2branch
+    
+    # copy scip and soplex tar to outside
+    cp ./scip-6.0.1.tgz ../
+    cp ./soplex-4.0.1.tgz ../
+    
+Now follow Soplex and SCIP installation instructions above.
+
+    # remove the untarred dirs
+    rm -rf ./scip-6.0.1/
+    rm -rf ./soplex-4.0.1/
+    rm ./scip-6.0.1.tgz
+    rm ./soplex-4.0.1.tgz
+    
+# General Install (Conda)
+
+    conda create -n learn2branch python=3.8
+    conda install cython numpy scikit-learn scipy tqdm natsort joblib
+    # pip install tensorflow-gpu==1.10.1
+    # pip install cython numpy scikit-learn scipy tqdm natsort joblib
+    # LambdaMART
+    pip install git+https://github.com/jma127/pyltr@78fa0ebfef67d6594b8415aa5c6136e30a5e3395  
+    pip install git+https://github.com/ds4dm/PySCIPOpt.git@ml-branching
+    
