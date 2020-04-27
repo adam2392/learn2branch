@@ -161,18 +161,18 @@ if __name__ == '__main__':
     ### LOG ###
     logfile = os.path.join(running_dir, 'log.txt')
 
-    # log(f"max_epochs: {max_epochs}", logfile)
-    # log(f"epoch_size: {epoch_size}", logfile)
-    # log(f"batch_size: {batch_size}", logfile)
-    # log(f"pretrain_batch_size: {pretrain_batch_size}", logfile)
-    # log(f"valid_batch_size : {valid_batch_size }", logfile)
-    # log(f"lr: {lr}", logfile)
-    # log(f"patience : {patience }", logfile)
-    # log(f"early_stopping : {early_stopping }", logfile)
-    # log(f"top_k: {top_k}", logfile)
-    # log(f"problem: {args.problem}", logfile)
-    # log(f"gpu: {args.gpu}", logfile)
-    # log(f"seed {args.seed}", logfile)
+    log(f"max_epochs: {max_epochs}", logfile)
+    log(f"epoch_size: {epoch_size}", logfile)
+    log(f"batch_size: {batch_size}", logfile)
+    log(f"pretrain_batch_size: {pretrain_batch_size}", logfile)
+    log(f"valid_batch_size : {valid_batch_size }", logfile)
+    log(f"lr: {lr}", logfile)
+    log(f"patience : {patience }", logfile)
+    log(f"early_stopping : {early_stopping }", logfile)
+    log(f"top_k: {top_k}", logfile)
+    log(f"problem: {args.problem}", logfile)
+    log(f"gpu: {args.gpu}", logfile)
+    log(f"seed {args.seed}", logfile)
 
     ### NUMPY / TENSORFLOW SETUP ###
     if args.gpu == -1:
@@ -265,7 +265,7 @@ if __name__ == '__main__':
 
         # TEST
         valid_loss, valid_kacc = process(model, valid_data, top_k, None)
-        # log(f"VALID LOSS: {valid_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, valid_kacc)]), logfile)
+        log(f"VALID LOSS: {valid_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, valid_kacc)]), logfile)
 
         if valid_loss < best_loss:
             plateau_count = 0

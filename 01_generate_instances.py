@@ -683,7 +683,6 @@ if __name__ == '__main__':
             generate_setcover(nrows=nrows, ncols=ncols, density=dens, filename=filename, rng=rng, max_coef=max_coef)
 
         print('done.')
-
     elif args.problem == 'indset':
         number_of_nodes = 500
         affinity = 4
@@ -750,7 +749,6 @@ if __name__ == '__main__':
             generate_indset(graph, filename)
 
         print("done.")
-
     elif args.problem == 'cauctions':
         number_of_items = 100
         number_of_bids = 500
@@ -826,7 +824,6 @@ if __name__ == '__main__':
             generate_cauctions(rng, filename, n_items=nitems, n_bids=nbids, add_item_prob=0.7)
 
         print("done.")
-
     elif args.problem == 'facilities':
         number_of_customers = 100
         number_of_facilities = 100
@@ -908,7 +905,6 @@ if __name__ == '__main__':
             generate_capacited_facility_location(rng, filename, n_customers=ncs, n_facilities=nfs, ratio=r)
 
         print("done.")
-
     elif args.problem == 'real-tsp':
         tsplib_files = os.listdir('data/real-tsp/')
 
@@ -927,7 +923,6 @@ if __name__ == '__main__':
             generate_real_tsp(V, c, instance_name)
 
         print("done.")
-
     elif args.problem == 'tsp':
         number_of_nodes = 100
         nnodess = []

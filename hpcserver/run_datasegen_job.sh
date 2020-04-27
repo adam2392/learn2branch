@@ -1,32 +1,17 @@
-#!/bin/bash
-#SBATCH --partition=gpup100
-#SBATCH –gres=gpu:1
+#!/bin/sh
+#SBATCH --partition=shared
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
-#SBATCH --output=train.slurm.%j.out
-#SBATCH --error=train.slurm.%j.err
-#SBATCH --job-name=train
+#SBATCH --output=tsp.slurm.%j.out
+#SBATCH --error=tsp.slurm.%j.err
+#SBATCH --job-name=tsp_data
 #SBATCH --time=12:0:0
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=12
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
-#interact -p debug -n 4 -t 1:0:0
-#interact -t 3:0:0 -p gpuk80 -g 1 -N 1 -n 6
-
-# load in CUDA/Singularity
-module load cuda/9.2           # also locates matching $CUDA_DRIVER location
+module load cuda/9.2
 module load singularity/3.5
-
-# load in Anaconda and conda environment
-#module restore conda
-
-# activate  conda environment and double check loaded modules
-ml
-
-# echo which python we are using
-echo 'PYTHON IS'
-echo $(which python)
 
 # actual bash commands to submit the job
 ######################################################################
@@ -40,6 +25,6 @@ echo $(which python)
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 # 3. run signularity image w/ python script
-singularity exec --nv ./sciptflow.sif python3.6 ../03_train_gcnn.py <params>
+singularity exec ./sciptflow.sif python ../02_generate_dataset.py --<params>
 
 exit
