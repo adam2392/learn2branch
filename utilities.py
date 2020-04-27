@@ -4,6 +4,8 @@ import scipy.sparse as sp
 import pyscipopt as scip
 import pickle
 import gzip
+from graspy.embed import AdjacencySpectralEmbed
+import argparse
 
 
 def log(str, logfile=None):
@@ -90,6 +92,38 @@ def extract_state(model, buffer=None):
     row_norms = s["row"]["norms"]
     row_norms[row_norms == 0] = 1
 
+    # Row features
+    if "state" in buffer:
+        row_feats = buffer["state"]["row_feats"]
+        has_lhs = buffer["state"]["has_lhs"]
+        has_rhs = buffer["state"]["has_rhs"]
+    else:
+        row_feats = {}
+        has_lhs = np.nonzero(~np.isnan(s["row"]["lhss"]))[0]
+        has_rhs = np.nonzero(~np.isnan(s["row"]["rhss"]))[0]
+        row_feats["obj_cosine_similarity"] = np.concatenate(
+            (-s["row"]["objcossims"][has_lhs], +s["row"]["objcossims"][has_rhs])
+        ).reshape(-1, 1)
+        row_feats["bias"] = np.concatenate(
+            (
+                -(s["row"]["lhss"] / row_norms)[has_lhs],
+                +(s["row"]["rhss"] / row_norms)[has_rhs],
+            )
+        ).reshape(-1, 1)
+
+    row_feats["is_tight"] = np.concatenate(
+        (s["row"]["is_at_lhs"][has_lhs], s["row"]["is_at_rhs"][has_rhs])
+    ).reshape(-1, 1)
+
+    row_feats["age"] = np.concatenate(
+        (s["row"]["ages"][has_lhs], s["row"]["ages"][has_rhs])
+    ).reshape(-1, 1) / (s["stats"]["nlps"] + 5)
+
+    tmp = s["row"]["dualsols"] / (row_norms * obj_norm)
+    row_feats["dualsol_val_normalized"] = np.concatenate(
+        (-tmp[has_lhs], +tmp[has_rhs])
+    ).reshape(-1, 1)
+
     # Edge features
     if "state" in buffer:
         edge_row_idxs = buffer["state"]["edge_row_idxs"]
@@ -121,6 +155,9 @@ def extract_state(model, buffer=None):
     edge_feat_vals = np.concatenate(list(edge_feats.values()), axis=-1)
 
     # Get adjacency spectral embedding (ASE) of graph
+    n = np.sum(has_lhs)
+    m = np.sum(has_rhs)
+    data = edge_feat_vals.reshape(-1)
     adj = sp.coo_matrix((data, (edge_row_idxs, edge_col_idxs)), shape=(m + n, m + n))
     ase = AdjacencySpectralEmbed(n_components=3)
     x_hat = ase.fit_transform(adj.toarray() + adj.toarray().T)
@@ -175,39 +212,7 @@ def extract_state(model, buffer=None):
         "values": col_feat_vals,
     }
 
-    # Row features
-
-    if "state" in buffer:
-        row_feats = buffer["state"]["row_feats"]
-        has_lhs = buffer["state"]["has_lhs"]
-        has_rhs = buffer["state"]["has_rhs"]
-    else:
-        row_feats = {}
-        has_lhs = np.nonzero(~np.isnan(s["row"]["lhss"]))[0]
-        has_rhs = np.nonzero(~np.isnan(s["row"]["rhss"]))[0]
-        row_feats["obj_cosine_similarity"] = np.concatenate(
-            (-s["row"]["objcossims"][has_lhs], +s["row"]["objcossims"][has_rhs])
-        ).reshape(-1, 1)
-        row_feats["bias"] = np.concatenate(
-            (
-                -(s["row"]["lhss"] / row_norms)[has_lhs],
-                +(s["row"]["rhss"] / row_norms)[has_rhs],
-            )
-        ).reshape(-1, 1)
-
-    row_feats["is_tight"] = np.concatenate(
-        (s["row"]["is_at_lhs"][has_lhs], s["row"]["is_at_rhs"][has_rhs])
-    ).reshape(-1, 1)
-
-    row_feats["age"] = np.concatenate(
-        (s["row"]["ages"][has_lhs], s["row"]["ages"][has_rhs])
-    ).reshape(-1, 1) / (s["stats"]["nlps"] + 5)
-
-    tmp = s["row"]["dualsols"] / (row_norms * obj_norm)
-    row_feats["dualsol_val_normalized"] = np.concatenate(
-        (-tmp[has_lhs], +tmp[has_rhs])
-    ).reshape(-1, 1)
-
+    # Finalize constraints
     row_feats["x1"] = c_embed[:, 0].reshape(-1, 1)
     row_feats["x2"] = c_embed[:, 1].reshape(-1, 1)
     row_feats["x3"] = c_embed[:, 2].reshape(-1, 1)
