@@ -40,6 +40,6 @@ echo $(which python)
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 # 3. run signularity image w/ python script
-singularity exec --nv ./sciptflow.sif python3.6 ../03_train_gcnn.py <params>
+singularity exec --nv ./sciptflow.sif python3.6 ../03_train_gcnn.py cauctions
 
 exit

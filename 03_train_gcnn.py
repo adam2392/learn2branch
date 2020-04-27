@@ -3,6 +3,7 @@ import importlib
 import argparse
 import sys
 import pathlib
+from pathlib import Path
 import pickle
 import numpy as np
 from time import strftime
@@ -131,6 +132,12 @@ if __name__ == '__main__':
         type=int,
         default=0,
     )
+    parser.add_argument(
+        '--sourcedir',
+        help='Source directory for the datasets.',
+        type=str,
+        default='',
+    )
     args = parser.parse_args()
 
     ### HYPER PARAMETERS ###
@@ -188,8 +195,8 @@ if __name__ == '__main__':
     tf.set_random_seed(rng.randint(np.iinfo(int).max))
 
     ### SET-UP DATASET ###
-    train_files = list(pathlib.Path('data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
-    valid_files = list(pathlib.Path('data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
+    train_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
+    valid_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
 
     def take_subset(sample_files, cands_limit):
         nsamples = 0
