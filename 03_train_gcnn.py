@@ -197,7 +197,7 @@ if __name__ == '__main__':
     ### SET-UP DATASET ###
     train_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
     valid_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
-
+    print("READING IN DATA FROM: ", args.sourcedir)
     def take_subset(sample_files, cands_limit):
         nsamples = 0
         ncands = 0
