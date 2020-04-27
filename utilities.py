@@ -4,7 +4,7 @@ import scipy.sparse as sp
 import pyscipopt as scip
 import pickle
 import gzip
-from graspy.embed import AdjacencySpectralEmbed
+from scipy.sparse.linalg import svds
 import argparse
 
 
@@ -159,8 +159,8 @@ def extract_state(model, buffer=None):
     m = np.sum(has_rhs)
     data = edge_feat_vals.reshape(-1)
     adj = sp.coo_matrix((data, (edge_row_idxs, edge_col_idxs)), shape=(m + n, m + n))
-    ase = AdjacencySpectralEmbed(n_components=3)
-    x_hat = ase.fit_transform(adj.toarray() + adj.toarray().T)
+    u, s, vt = svds(adj, k=3)
+    x_hat = u @ np.diag(np.sqrt(s))
     v_embed, c_embed = x_hat[has_lhs, :], x_hat[has_lhs, :]
 
     edge_features = {
