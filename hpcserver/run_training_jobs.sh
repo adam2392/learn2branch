@@ -28,6 +28,8 @@ ml
 echo 'PYTHON IS'
 echo $(which python)
 
+DATADIR="$HOME/data/learn2branch/"
+
 # actual bash commands to submit the job
 ######################################################################
 # Use Singularity
@@ -40,6 +42,6 @@ echo $(which python)
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 # 3. run signularity image w/ python script
-singularity exec --nv ./sciptflow.sif python3.6 ../03_train_gcnn.py cauctions
+singularity exec --nv ./sciptflow.sif python3.6 ../03_train_gcnn.py cauctions --sourcedir DATADIR
 
 exit
