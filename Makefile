@@ -3,7 +3,7 @@ PYTESTS ?= pytest
 CODESPELL_SKIPS ?= "doc/auto_*,*.fif,*.eve,*.gz,*.tgz,*.zip,*.mat,*.stc,*.label,*.w,*.bz2,*.annot,*.sulc,*.log,*.local-copy,*.orig_avg,*.inflated_avg,*.gii,*.pyc,*.doctree,*.pickle,*.inv,*.png,*.edf,*.touch,*.thickness,*.nofix,*.volume,*.defect_borders,*.mgh,lh.*,rh.*,COR-*,FreeSurferColorLUT.txt,*.examples,.xdebug_mris_calc,bad.segments,BadChannels,*.hist,empty_file,*.orig,*.js,*.map,*.ipynb,searchindex.dat,install_mne_c.rst,plot_*.rst,*.rst.txt,c_EULA.rst*,*.html,gdf_encodes.txt,*.svg"
 CODESPELL_DIRS ?= learn2branch/ doc/ tutorials/ examples/ tests/
 
-LOCALDIR=./data/sciptflow.sif
+LOCALDIR=./data/raw/tsp_instances.zip
 MARCCDIR=ali39@jhu.edu@gateway2.marcc.jhu.edu:/home-1/ali39@jhu.edu/data/learn2branch/
 
 MARCC_USER=ali39@jhu.edu
@@ -107,3 +107,6 @@ check:
 
 ssh:
 	$(ssh) $(remote)
+
+summarize:
+	tree trained_models;
