@@ -49,6 +49,6 @@ echo $SEED;
 echo $PROBLEM;
 
 # 3. run signularity image w/ python script
-singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --s $SEED --sourcedir $DATADIR
+singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --seed $SEED --sourcedir $DATADIR
 
 exit
