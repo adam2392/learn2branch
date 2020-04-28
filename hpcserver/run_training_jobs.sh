@@ -42,7 +42,7 @@ DATADIR="$HOME/data/learn2branch/"
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
-SEED=2
+SEED=0
 PROBLEM='indset'
 
 echo $SEED;
