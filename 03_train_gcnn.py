@@ -112,7 +112,9 @@ if __name__ == '__main__':
     parser.add_argument(
         'problem',
         help='MILP instance type to process.',
-        choices=['setcover', 'cauctions', 'facilities', 'indset', 'tsp'],
+        choices=['setcover', 'cauctions', 'indset', 'tsp',
+                 # 'facilities', # out of RAM to generate locally
+                 ],
     )
     parser.add_argument(
         '-m', '--model',
