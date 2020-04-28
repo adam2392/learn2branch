@@ -2,8 +2,8 @@
 #SBATCH --partition=gpup100
 #SBATCH –gres=gpu:1
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
-#SBATCH --output=train.slurm.%j.out
-#SBATCH --error=train.slurm.%j.err
+#SBATCH --output=./logs/train.slurm.%j.out
+#SBATCH --error=./logs/train.slurm.%j.err
 #SBATCH --job-name=train
 #SBATCH --time=12:0:0
 #SBATCH --nodes=1
@@ -44,6 +44,6 @@ export SINGULARITY_HOME=$PWD:/home/$USER
 cd ..
 
 # 3. run signularity image w/ python script
-singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py indset --sourcedir $DATADIR
+singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py cauctions --sourcedir $DATADIR
 
 exit

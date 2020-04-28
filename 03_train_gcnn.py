@@ -112,7 +112,7 @@ if __name__ == '__main__':
     parser.add_argument(
         'problem',
         help='MILP instance type to process.',
-        choices=['setcover', 'cauctions', 'facilities', 'indset'],
+        choices=['setcover', 'cauctions', 'facilities', 'indset', 'tsp'],
     )
     parser.add_argument(
         '-m', '--model',
@@ -195,6 +195,7 @@ if __name__ == '__main__':
     tf.set_random_seed(rng.randint(np.iinfo(int).max))
 
     ### SET-UP DATASET ###
+    print(args)
     train_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
     valid_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
     print("READING IN DATA FROM: ", args.sourcedir)
