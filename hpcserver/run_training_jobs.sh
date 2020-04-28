@@ -41,6 +41,8 @@ DATADIR="$HOME/data/learn2branch/"
 # 2. redefine SINGULARITY_HOME to mount current working directory to base $HOME
 export SINGULARITY_HOME=$PWD:/home/$USER
 
+cd ..
+
 # 3. run signularity image w/ python script
 singularity exec --nv ./sciptflow.sif python3.6 ../03_train_gcnn.py cauctions --sourcedir DATADIR
 
