@@ -348,10 +348,10 @@ if __name__ == '__main__':
         time_limit = 600
 
     elif args.problem == 'tsp':
-        instances_train = glob.glob('data/instances/tsp/transfer_100/*.lp')
-        instances_valid = glob.glob('data/instances/tsp/valid_50/*.lp')
-        instances_test = glob.glob('data/instances/tsp/test_50/*.lp')
-        out_dir = 'data/samples/tsp/50'
+        instances_train = glob.glob('data/instances/tsp/train_100/*.lp')
+        instances_valid = glob.glob('data/instances/tsp/valid_100/*.lp')
+        instances_test = glob.glob('data/instances/tsp/test_100/*.lp')
+        out_dir = 'data/samples/tsp/100'
         
     else:
         raise NotImplementedError

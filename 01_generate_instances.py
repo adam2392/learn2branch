@@ -908,22 +908,3 @@ if __name__ == '__main__':
             generate_capacited_facility_location(rng, filename, n_customers=ncs, n_facilities=nfs, ratio=r)
 
         print("done.")
-
-    elif args.problem == 'real-tsp':
-        tsplib_files = os.listdir('data/real-tsp/')
-
-        if not tsplib_files:
-            raise FileNotFoundError('No files in directory tsp directory.')
-
-        lp_dir = 'data/instances/real-tsp/'
-        if not os.path.exists(lp_dir):
-            os.makedirs(lp_dir)
-
-        for i, filename in enumerate(tsplib_files):
-            instance_name = f'instance_{i+1}.lp'
-            V, c, _, _ = read_tsplib(f'data/tsp/{filename}')
-            
-            print(f"  generating file {instance_name} ...")
-            generate_real_tsp(V, c, instance_name)
-
-        print("done.")

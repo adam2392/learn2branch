@@ -14,15 +14,16 @@ Copyright (c) by Joao Pedro PEDROSO and Mikio KUBO, 2012
 
 import gzip
 import math
+import os
 import pickle
 import random
 
 import networkx as nx
 import numpy as np
 from joblib import Parallel, delayed
-from pyscipopt import Model, quicksum, scip
 
 import utilities
+from pyscipopt import Model, quicksum, scip
 
 
 def tsp2lp(V, c, filename):
@@ -152,36 +153,42 @@ if __name__ == "__main__":
     print("Usage: %s instance" % sys.argv[0])
     print("Using randomized example instead")
     seed = 1
-    # random.seed(seed)
+    random.seed(seed)
     
     filenames = []
     
     n_nodes = 100
     n_samples = 10000
+    os.makedirs(f'data/instances/tsp/train_{n_nodes}')
     filenames = [f'data/instances/tsp/train_{n_nodes}/instance_{i+1}.lp' for i in range(n_samples)]
     out = Parallel(n_jobs=-1)(delayed(main)(n_nodes, filenames[i]) for i in range(n_samples))
 
     n_nodes = 100
     n_samples = 2000
+    os.makedirs(f'data/instances/tsp/test_{n_nodes}')
     filenames = [f'data/instances/tsp/test_{n_nodes}/instance_{i+1}.lp' for i in range(n_samples)]
     out = Parallel(n_jobs=-1)(delayed(main)(n_nodes, filenames[i]) for i in range(n_samples))
 
     n_nodes = 100
     n_samples = 2000
+    os.makedirs(f'data/instances/tsp/valid_{n_nodes}')
     filenames = [f'data/instances/tsp/valid_{n_nodes}/instance_{i+1}.lp' for i in range(n_samples)]
     out = Parallel(n_jobs=-1)(delayed(main)(n_nodes, filenames[i]) for i in range(n_samples))
 
     n_nodes = 100
     n_samples = 100
+    os.makedirs(f'data/instances/tsp/transfer_{n_nodes}')
     filenames = [f'data/instances/tsp/transfer_{n_nodes}/instance_{i+1}.lp' for i in range(n_samples)]
     out = Parallel(n_jobs=-1)(delayed(main)(n_nodes, filenames[i]) for i in range(n_samples))
 
     n_nodes = 150
     n_samples = 100
+    os.makedirs(f'data/instances/tsp/transfer_{n_nodes}')
     filenames = [f'data/instances/tsp/transfer_{n_nodes}/instance_{i+1}.lp' for i in range(n_samples)]
     out = Parallel(n_jobs=-1)(delayed(main)(n_nodes, filenames[i]) for i in range(n_samples))
     
     n_nodes = 200
     n_samples = 100
+    os.makedirs(f'data/instances/tsp/transfer_{n_nodes}')
     filenames = [f'data/instances/tsp/transfer_{n_nodes}/instance_{i+1}.lp' for i in range(n_samples)] 
     out = Parallel(n_jobs=-1)(delayed(main)(n_nodes, filenames[i]) for i in range(n_samples))
