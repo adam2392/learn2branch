@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --partition=gpup100
+#SBATCH --time=11:0:0
 #SBATCH –-gres=gpu:1
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
 #SBATCH --output=./logs/train.slurm.%j.out
 #SBATCH --error=./logs/train.slurm.%j.err
 #SBATCH --job-name=train
-#SBATCH --time=12:0:0
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=24
 #SBATCH --mail-type=END
