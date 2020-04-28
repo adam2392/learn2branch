@@ -161,7 +161,7 @@ def extract_state(model, buffer=None):
     adj = sp.coo_matrix((data, (edge_row_idxs, edge_col_idxs)), shape=(m + n, m + n))
     u, s, vt = svds(adj, k=3)
     x_hat = u @ np.diag(np.sqrt(s))
-    v_embed, c_embed = x_hat[has_lhs, :], x_hat[has_lhs, :]
+    v_embed, c_embed = x_hat[has_lhs, :], x_hat[has_rhs, :]
 
     edge_features = {
         "names": edge_feat_names,
