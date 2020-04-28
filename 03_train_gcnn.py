@@ -3,6 +3,7 @@ import importlib
 import argparse
 import sys
 import pathlib
+from pathlib import Path
 import pickle
 import numpy as np
 from time import strftime
@@ -111,7 +112,9 @@ if __name__ == '__main__':
     parser.add_argument(
         'problem',
         help='MILP instance type to process.',
-        choices=['setcover', 'cauctions', 'facilities', 'indset'],
+        choices=['setcover', 'cauctions', 'indset', 'tsp',
+                 # 'facilities', # out of RAM to generate locally
+                 ],
     )
     parser.add_argument(
         '-m', '--model',
@@ -130,6 +133,12 @@ if __name__ == '__main__':
         help='CUDA GPU id (-1 for CPU).',
         type=int,
         default=0,
+    )
+    parser.add_argument(
+        '--sourcedir',
+        help='Source directory for the datasets.',
+        type=str,
+        default='',
     )
     args = parser.parse_args()
 
@@ -161,18 +170,18 @@ if __name__ == '__main__':
     ### LOG ###
     logfile = os.path.join(running_dir, 'log.txt')
 
-    # log(f"max_epochs: {max_epochs}", logfile)
-    # log(f"epoch_size: {epoch_size}", logfile)
-    # log(f"batch_size: {batch_size}", logfile)
-    # log(f"pretrain_batch_size: {pretrain_batch_size}", logfile)
-    # log(f"valid_batch_size : {valid_batch_size }", logfile)
-    # log(f"lr: {lr}", logfile)
-    # log(f"patience : {patience }", logfile)
-    # log(f"early_stopping : {early_stopping }", logfile)
-    # log(f"top_k: {top_k}", logfile)
-    # log(f"problem: {args.problem}", logfile)
-    # log(f"gpu: {args.gpu}", logfile)
-    # log(f"seed {args.seed}", logfile)
+    log(f"max_epochs: {max_epochs}", logfile)
+    log(f"epoch_size: {epoch_size}", logfile)
+    log(f"batch_size: {batch_size}", logfile)
+    log(f"pretrain_batch_size: {pretrain_batch_size}", logfile)
+    log(f"valid_batch_size : {valid_batch_size }", logfile)
+    log(f"lr: {lr}", logfile)
+    log(f"patience : {patience }", logfile)
+    log(f"early_stopping : {early_stopping }", logfile)
+    log(f"top_k: {top_k}", logfile)
+    log(f"problem: {args.problem}", logfile)
+    log(f"gpu: {args.gpu}", logfile)
+    log(f"seed {args.seed}", logfile)
 
     ### NUMPY / TENSORFLOW SETUP ###
     if args.gpu == -1:
@@ -188,9 +197,10 @@ if __name__ == '__main__':
     tf.set_random_seed(rng.randint(np.iinfo(int).max))
 
     ### SET-UP DATASET ###
-    train_files = list(pathlib.Path('data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
-    valid_files = list(pathlib.Path('data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
-
+    print(args)
+    train_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/train'.format(problem_folder)).glob('sample_*.pkl'))
+    valid_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/valid'.format(problem_folder)).glob('sample_*.pkl'))
+    print("READING IN DATA FROM: ", args.sourcedir)
     def take_subset(sample_files, cands_limit):
         nsamples = 0
         ncands = 0
@@ -265,7 +275,7 @@ if __name__ == '__main__':
 
         # TEST
         valid_loss, valid_kacc = process(model, valid_data, top_k, None)
-        # log(f"VALID LOSS: {valid_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, valid_kacc)]), logfile)
+        log(f"VALID LOSS: {valid_loss:0.3f} " + "".join([f" acc@{k}: {acc:0.3f}" for k, acc in zip(top_k, valid_kacc)]), logfile)
 
         if valid_loss < best_loss:
             plateau_count = 0

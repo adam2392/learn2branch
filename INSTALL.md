@@ -96,7 +96,8 @@ conda install tensorflow-gpu=1.12.0
 
 # General Install (MARCC)
 Note MARCC can be buggy due to lack of sudo. So we put SCIPOPTDIR in a local directory attached to a user. We also need the cmake module
-because it is not by default avail. for all users. 
+because it is not by default avail. for all users. Note you need to make sure cmake is at least version (3.15?); 
+needs to be upgraded usually or else some of the settings do not work as expected.
    
     # load modules needed
     ml cmake
@@ -123,7 +124,7 @@ Now follow Soplex and SCIP installation instructions above.
     
 # General Install (Conda)
 
-    conda create -n learn2branch python=3.8
+    conda create -n learn2branch python=3.5
     conda install cython numpy scikit-learn scipy tqdm natsort joblib
     # pip install tensorflow-gpu==1.10.1
     # pip install cython numpy scikit-learn scipy tqdm natsort joblib

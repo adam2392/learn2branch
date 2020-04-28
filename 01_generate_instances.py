@@ -683,7 +683,6 @@ if __name__ == '__main__':
             generate_setcover(nrows=nrows, ncols=ncols, density=dens, filename=filename, rng=rng, max_coef=max_coef)
 
         print('done.')
-
     elif args.problem == 'indset':
         number_of_nodes = 500
         affinity = 4
@@ -750,7 +749,6 @@ if __name__ == '__main__':
             generate_indset(graph, filename)
 
         print("done.")
-
     elif args.problem == 'cauctions':
         number_of_items = 100
         number_of_bids = 500
@@ -826,7 +824,6 @@ if __name__ == '__main__':
             generate_cauctions(rng, filename, n_items=nitems, n_bids=nbids, add_item_prob=0.7)
 
         print("done.")
-
     elif args.problem == 'facilities':
         number_of_customers = 100
         number_of_facilities = 100
