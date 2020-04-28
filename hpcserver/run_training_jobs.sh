@@ -44,6 +44,6 @@ export SINGULARITY_HOME=$PWD:/home/$USER
 cd ..
 
 # 3. run signularity image w/ python script
-singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py cauctions --sourcedir $DATADIR
+singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py $1 --sourcedir $DATADIR
 
 exit
