@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=gpup100
-#SBATCH –gres=gpu:1
+#SBATCH –-gres=gpu:1
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
 #SBATCH --output=./logs/train.slurm.%j.out
 #SBATCH --error=./logs/train.slurm.%j.err
