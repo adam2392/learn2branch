@@ -42,8 +42,13 @@ DATADIR="$HOME/data/learn2branch/"
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
+SEED=2
+PROBLEM='indset'
+
+echo $SEED;
+echo $PROBLEM;
 
 # 3. run signularity image w/ python script
-singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py tsp --sourcedir $DATADIR
+singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --s $SEED --sourcedir $DATADIR
 
 exit
