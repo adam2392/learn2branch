@@ -15,8 +15,11 @@
 #interact -t 3:0:0 -p gpuk80 -g 1 -N 1 -n 6
 
 # load in CUDA/Singularity
+# ml cuda/10.1
+# https://marcc-hpc.github.io/esc/common/tensorflow-latest
 module load cuda/9.2           # also locates matching $CUDA_DRIVER location
 module load singularity/3.5
+
 
 # load in Anaconda and conda environment
 #module restore conda

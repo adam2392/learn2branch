@@ -6,6 +6,9 @@ CODESPELL_DIRS ?= learn2branch/ doc/ tutorials/ examples/ tests/
 LOCALDIR=./data/raw/tsp_instances.zip
 MARCCDIR=ali39@jhu.edu@gateway2.marcc.jhu.edu:/home-1/ali39@jhu.edu/data/learn2branch/
 
+MARCC_RESULTS_DIR=ali39@jhu.edu@gateway2.marcc.jhu.edu:/home-1/ali39@jhu.edu/code/learn2branch/trained_models/
+LOCAL_RESULTS_DIR=./trained_models/
+
 MARCC_USER=ali39@jhu.edu
 ssh 							:= ssh $(port)
 remote	          				:= $(MARCC_USER)@gateway2.marcc.jhu.edu
@@ -76,11 +79,10 @@ push-marcc:
 	rsync -aP $(LOCALDIR) $(MARCCDIR);
 
 push-external:
-#	rsync -aP $(LOCALDIR) $(EXTERNALDIR) --exclude='*/tempdir/';
 	rsync -aP $(LOCAL_RESULTSDIR) $(EXTERNAL_RESULTSDIR);
 
 pull-marcc:
-	rsync -aP $(MARCCDIR) $(LOCALDIR);
+	rsync -aP $(MARCC_RESULTS_DIR) $(LOCAL_RESULTS_DIR);
 
 pull-external:
 	rsync -aP $(EXTERNALDIR) $(LOCALDIR) --exclude='*/tempdir/';

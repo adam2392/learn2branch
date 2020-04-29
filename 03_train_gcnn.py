@@ -110,7 +110,8 @@ def process(model, dataloader, top_k, optimizer=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'problem',
+        '--problem',
+        default='tsp',
         help='MILP instance type to process.',
         choices=['setcover', 'cauctions', 'indset', 'tsp',
                  # 'facilities', # out of RAM to generate locally
@@ -138,7 +139,7 @@ if __name__ == '__main__':
         '--sourcedir',
         help='Source directory for the datasets.',
         type=str,
-        default='',
+        default='./data/processed/',
     )
     args = parser.parse_args()
 
@@ -158,7 +159,7 @@ if __name__ == '__main__':
     problem_folders = {
         'setcover': 'setcover/500r_1000c_0.05d',
         'cauctions': 'cauctions/100_500',
-        'facilities': 'facilities/100_100_5',
+        # 'facilities': 'facilities/100_100_5',
         'indset': 'indset/500_4',
         'tsp': 'tsp/100',
     }
