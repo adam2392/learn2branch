@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #SBATCH -p gpup100
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=1
@@ -12,6 +11,9 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
+########################################################
+# make sure ALL "-" are the same in SBATCH command!
+########################################################
 #interact -p debug -n 4 -t 1:0:0
 #interact -t 11:30:0 -p gpup100 -g 1 -N 1 -n 6
 
@@ -62,8 +64,8 @@ DATADIR="$HOME/data/learn2branch/"
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
-SEED=0
-PROBLEM='cauctions'
+SEED=10
+PROBLEM='tsp'
 
 echo $SEED;
 echo $PROBLEM;
