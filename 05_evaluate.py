@@ -137,11 +137,24 @@ if __name__ == '__main__':
         type=int,
         default=0,
     )
+    parser.add_argument(
+        '--sourcedir',
+        help='Source directory for the datasets.',
+        type=str,
+        default='./data/processed/',
+    )
+    parser.add_argument(
+        '--seeds', 
+        help='delimited seeds',
+        type=str,
+        defaut='0'
+    )
     args = parser.parse_args()
 
     result_file = f"{args.problem}_{time.strftime('%Y%m%d-%H%M%S')}.csv"
     instances = []
-    seeds = [0, 1, 2, 3, 4]
+    #seeds = [0, 1, 2, 3, 4]
+    seeds = [int(item) for item in args.seeds.split(',')]
     gcnn_models = ['baseline']
     other_models = ['extratrees_gcnn_agg', 'lambdamart_khalil', 'svmrank_khalil']
     internal_branchers = ['relpscost']

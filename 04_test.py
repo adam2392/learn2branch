@@ -14,10 +14,54 @@ import tensorflow.contrib.eager as tfe
 
 import svmrank
 
-import utilities
+#import utilities
+import pickle
 
 from utilities_tf import load_batch_gcnn
 
+def load_flat_samples(filename, feat_type, label_type, augment_feats, normalize_feats):
+    with gzip.open(filename, "rb") as file:
+        sample = pickle.load(file)
+
+    state, khalil_state, best_cand, cands, cand_scores = sample["data"]
+
+    cands = np.array(cands)
+    cand_scores = np.array(cand_scores)
+
+    cand_states = []
+    if feat_type in ("all", "gcnn_agg"):
+        cand_states.append(compute_extended_variable_features(state, cands))
+    if feat_type in ("all", "khalil"):
+        cand_states.append(khalil_state)
+    cand_states = np.concatenate(cand_states, axis=1)
+
+    best_cand_idx = np.where(cands == best_cand)[0][0]
+
+    # feature preprocessing
+    cand_states = preprocess_variable_features(
+        cand_states,
+        interaction_augmentation=augment_feats,
+        normalization=normalize_feats,
+    )
+
+    if label_type == "scores":
+        cand_labels = cand_scores
+
+    elif label_type == "ranks":
+        cand_labels = np.empty(len(cand_scores), dtype=int)
+        cand_labels[cand_scores.argsort()] = np.arange(len(cand_scores))
+
+    elif label_type == "bipartite_ranks":
+        # scores quantile discretization as in
+        # Khalil et al. (2016) Learning to Branch in Mixed Integer Programming
+        cand_labels = np.empty(len(cand_scores), dtype=int)
+        cand_labels[cand_scores >= 0.8 * cand_scores.max()] = 1
+        cand_labels[cand_scores < 0.8 * cand_scores.max()] = 0
+
+    else:
+        raise ValueError(f"Invalid label type: '{label_type}'")
+
+    return cand_states, cand_labels, best_cand_idx
 
 def load_batch_flat(sample_files, feats_type, augment_feats, normalize_feats):
     cand_features = []
@@ -25,7 +69,7 @@ def load_batch_flat(sample_files, feats_type, augment_feats, normalize_feats):
     cand_scoress = []
 
     for i, filename in enumerate(sample_files):
-        cand_states, cand_scores, cand_choice = utilities.load_flat_samples(filename, feats_type, 'scores', augment_feats, normalize_feats)
+        cand_states, cand_scores, cand_choice = load_flat_samples(filename, feats_type, 'scores', augment_feats, normalize_feats)
 
         cand_features.append(cand_states)
         cand_choices.append(cand_choice)
@@ -126,6 +170,18 @@ if __name__ == '__main__':
         type=int,
         default=0,
     )
+    parser.add_argument(
+        '--sourcedir',
+        help='Source directory for the datasets.',
+        type=str,
+        default='./data/processed/',
+    )
+    parser.add_argument(
+        '--seeds', 
+        help='delimited seeds',
+        type=str,
+        defaut='0'
+    )
     args = parser.parse_args()
 
     print(f"problem: {args.problem}")
@@ -133,7 +189,8 @@ if __name__ == '__main__':
 
     os.makedirs("results", exist_ok=True)
     result_file = f"results/{args.problem}_validation_{time.strftime('%Y%m%d-%H%M%S')}.csv"
-    seeds = [0, 1, 2, 3, 4]
+    #seeds = [0, 1, 2, 3, 4]
+    seeds = [int(item) for item in args.seeds.split(',')]
     gcnn_models = ['baseline']
     other_models = ['extratrees_gcnn_agg', 'lambdamart_khalil', 'svmrank_khalil']
     test_batch_size = 128
@@ -166,7 +223,7 @@ if __name__ == '__main__':
     tf.enable_eager_execution(config)
     tf.executing_eagerly()
 
-    test_files = list(pathlib.Path(f"data/samples/{problem_folder}/test").glob('sample_*.pkl'))
+    test_files = list(pathlib.Path(Path(args.sourcedir) / 'data/samples/{}/test'.format(problem_folder)).glob('sample_*.pkl'))
     test_files = [str(x) for x in test_files]
 
     print(f"{len(test_files)} test samples")
