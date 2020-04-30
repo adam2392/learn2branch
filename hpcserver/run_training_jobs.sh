@@ -17,7 +17,7 @@
 # load in CUDA/Singularity
 # ml cuda/10.1
 # https://marcc-hpc.github.io/esc/common/tensorflow-latest
-module load cuda/9.2           # also locates matching $CUDA_DRIVER location
+module load cuda/10.0          # also locates matching $CUDA_DRIVER location
 module load singularity/3.5
 
 
@@ -48,7 +48,7 @@ DATADIR="$HOME/data/learn2branch/"
 
 cd ..
 SEED=0
-PROBLEM='indset'
+PROBLEM='tsp'
 
 echo $SEED;
 echo $PROBLEM;
