@@ -7,6 +7,7 @@
 #SBATCH --error=./logs/train.slurm.%j.err
 #SBATCH --job-name=train
 #SBATCH --ntasks-per-node=6
+#SBATCH --cpus-per-task=1
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
