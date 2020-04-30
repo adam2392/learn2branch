@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #SBATCH -p gpup100
 #SBATCH –-gres=gpu:1
 #SBATCH --ntasks-per-node=1
