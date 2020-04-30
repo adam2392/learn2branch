@@ -1,14 +1,12 @@
 #!/bin/bash
-
 #SBATCH -p gpup100
-#SBATCH --gres=gpu:1
-#SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=6
 #SBATCH --time=11:30:0
+#SBATCH –-gres=gpu:1
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
 #SBATCH --output=./logs/train.slurm.%j.out
 #SBATCH --error=./logs/train.slurm.%j.err
-#SBATCH --job-name=train1
+#SBATCH --job-name=train
+#SBATCH --ntasks-per-node=6
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
@@ -19,10 +17,8 @@ ml python/3.6
 ml cmake
 ml cuda/9.0
 ml singularity/3.5
-#interact -p debug -n 4 -t 1:0:0
-#interact -t 11:30:0 -p gpup100 -g 1 -N 1 -n 6
 
-##### load in CUDA/Singularity
+# load in CUDA/Singularity
 # ml cuda/10.1
 # https://marcc-hpc.github.io/esc/common/tensorflow-latest
 #ml gcc/6.4.0
@@ -62,7 +58,7 @@ DATADIR="$HOME/data/learn2branch/"
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
-SEED=0
+SEED=70
 PROBLEM='cauctions'
 
 echo $SEED;
