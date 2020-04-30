@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --partition=gpup100
-#SBATCH --time=0:10:0
+#SBATCH --time=11:30:0
 #SBATCH –-gres=gpu:1
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
 #SBATCH --output=./logs/train.slurm.%j.out
@@ -57,7 +57,7 @@ echo $(which python)
 #export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
-SEED=9
+SEED=1
 PROBLEM='tsp'
 
 echo $SEED;
