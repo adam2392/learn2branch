@@ -53,8 +53,8 @@ echo $(which python)
 #export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
-SEED=0
-PROBLEM='tsp'
+SEED=1
+PROBLEM='cauctions'
 
 echo $SEED;
 echo $PROBLEM;
