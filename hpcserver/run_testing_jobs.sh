@@ -16,14 +16,24 @@
 #interact -t 3:0:0 -p gpuk80 -g 1 -N 1 -n 6
 
 # load in CUDA/Singularity
-module load cuda/9.2           # also locates matching $CUDA_DRIVER location
-module load singularity/3.5
+ml cuda/9.0           # also locates matching $CUDA_DRIVER location
+ml singularity/3.5
+ml python/3.6
 
-# load in Anaconda and conda environment
-#module restore conda
+# debug prints
+echo $CUDA_VISIBLE_DEVICES
+export SCIPOPTDIR="$HOME/code/scip"
+DATADIR="$HOME/data/learn2branch/"
 
 # double check loaded modules
 ml
+
+cd ..
+SEED=14
+PROBLEM='tsp'
+
+echo $SEED;
+echo $PROBLEM;
 
 ######################################################################
 # Use Singularity
