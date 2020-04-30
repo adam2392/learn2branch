@@ -2,11 +2,12 @@
 #SBATCH -p gpup100
 #SBATCH --time=11:30:0
 #SBATCH –-gres=gpu:1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=6
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
 #SBATCH --output=./logs/train.slurm.%j.out
 #SBATCH --error=./logs/train.slurm.%j.err
 #SBATCH --job-name=train
-#SBATCH --ntasks-per-node=6
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
@@ -64,8 +65,8 @@ PROBLEM='cauctions'
 echo $SEED;
 echo $PROBLEM;
 
-#python ./03_train_gcnn.py $PROBLEM --seed $SEED --sourcedir $DATADIR
+python ./03_train_gcnn.py $PROBLEM --seed $SEED --sourcedir $DATADIR
 # 3. run signularity image w/ python script
-singularity exec -B /scratch/ --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --seed $SEED --sourcedir $DATADIR
+#singularity exec -B /scratch/ --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --seed $SEED --sourcedir $DATADIR
 
 exit
