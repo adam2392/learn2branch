@@ -9,6 +9,10 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
+#interact -p debug -n 4 -t 1:0:0
+#interact -t 11:30:0 -p gpup100 -g 1 -N 1 -n 6
+
+
 ml python/3.6
 ml cmake
 ml cuda/9.0
