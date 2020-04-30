@@ -6,6 +6,8 @@
 #SBATCH --cpus-per-task=6
 #SBATCH --time=11:30:0
 #SBATCH --job-name=train1
+#SBATCH --mail-type=END
+#SBATCH --mail-user=ali39@jhu.edu
 
 ml python/3.6
 ml cmake
