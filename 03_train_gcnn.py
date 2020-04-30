@@ -158,6 +158,8 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
+    args.gpu = os.getenv('CUDA_VISIBLE_DEVICES', 0)
+
     ### HYPER PARAMETERS ###
     max_epochs = 1000
     epoch_size = 312

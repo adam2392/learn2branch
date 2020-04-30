@@ -1,18 +1,17 @@
 #!/bin/bash
-#SBATCH --partition=gpup100
+#SBATCH -p gpup100
 #SBATCH --time=11:30:0
 #SBATCH –-gres=gpu:1
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
 #SBATCH --output=./logs/train.slurm.%j.out
 #SBATCH --error=./logs/train.slurm.%j.err
 #SBATCH --job-name=train
-#SBATCH --nodes=1
 #SBATCH --ntasks-per-node=6
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
 #interact -p debug -n 4 -t 1:0:0
-#interact -t 0:30:0 -p gpuk80 -g 1 -N 1 -n 6
+#interact -t 11:30:0 -p gpup100 -g 1 -N 1 -n 6
 
 ml python/3.6
 ml cmake
@@ -34,6 +33,7 @@ ml
 # echo which python we are using
 echo 'PYTHON IS'
 echo $(which python)
+echo $CUDA_VISIBLE_DEVICES
 
 #source ../.venv/bin/activate
 export SCIPOPTDIR="$HOME/code/scip"
@@ -43,7 +43,7 @@ DATADIR="$HOME/data/learn2branch/"
 #export LD_LIBRARY_PATH
 #export LD_LIBRARY_PATH=/lib:/usr/lib:$LD_LIBRARY_PATH
 #gcc --version
-echo $(which python)
+#echo $(which python)
 
 # actual bash commands to submit the job
 ######################################################################
@@ -54,17 +54,17 @@ echo $(which python)
 # singularity pull --arch amd64 ./sciptflow.sif library://adam2392/default/scip_and_deeplearning:latest
 
 # 2. redefine SINGULARITY_HOME to mount current working directory to base $HOME
-#export SINGULARITY_HOME=$PWD:/home/$USER
+export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
-SEED=1
-PROBLEM='tsp'
+SEED=70
+PROBLEM='cauctions'
 
 echo $SEED;
 echo $PROBLEM;
 
-python ./03_train_gcnn.py $PROBLEM --seed $SEED --sourcedir $DATADIR
+#python ./03_train_gcnn.py $PROBLEM --seed $SEED --sourcedir $DATADIR
 # 3. run signularity image w/ python script
-#singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --seed $SEED --sourcedir $DATADIR
+singularity exec -B /scratch/ --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --seed $SEED --sourcedir $DATADIR
 
 exit
