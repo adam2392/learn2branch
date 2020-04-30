@@ -5,6 +5,9 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=6
 #SBATCH --time=11:30:0
+#SBATCH --workdir=/home-1/ali39@jhu.edu/code/
+#SBATCH --output=test.slurm.%j.out
+#SBATCH --error=test.slurm.%j.err
 #SBATCH --job-name=train1
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
