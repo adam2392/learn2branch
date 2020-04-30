@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --partition=gpup100
-#SBATCH –gres=gpu:1
-#SBATCH --workdir=/home-1/ali39@jhu.edu/code/
-#SBATCH --output=test.slurm.%j.out
-#SBATCH --error=test.slurm.%j.err
-#SBATCH --job-name=test
-#SBATCH --time=12:0:0
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=12
+#SBATCH -p gpup100
+#SBATCH --gres=gpu:1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=6
+#SBATCH --time=11:30:0
+#SBATCH --workdir=/home-1/ali39@jhu.edu/code/learn2branch
+#SBATCH --output=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.out
+#SBATCH --error=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.err
+#SBATCH --job-name=train1
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
