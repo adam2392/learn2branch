@@ -1,25 +1,20 @@
-#!/bin/sh
+#!/bin/bash
+
 #SBATCH -p gpup100
-#SBATCH –-gres=gpu:1
+#SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=6
 #SBATCH --time=11:30:0
-#SBATCH --workdir=/home-1/ali39@jhu.edu/code/
-#SBATCH --output=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.out
-#SBATCH --error=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.err
-#SBATCH --job-name=train
-#SBATCH --mail-type=END
-#SBATCH --mail-user=ali39@jhu.edu
-
-#interact -p debug -n 4 -t 1:0:0
-#interact -t 11:30:0 -p gpup100 -g 1 -N 1 -n 6
+#SBATCH --job-name=train1
 
 ml python/3.6
 ml cmake
 ml cuda/9.0
 ml singularity/3.5
+#interact -p debug -n 4 -t 1:0:0
+#interact -t 11:30:0 -p gpup100 -g 1 -N 1 -n 6
 
-# load in CUDA/Singularity
+##### load in CUDA/Singularity
 # ml cuda/10.1
 # https://marcc-hpc.github.io/esc/common/tensorflow-latest
 #ml gcc/6.4.0
