@@ -126,7 +126,7 @@ Now follow Soplex and SCIP installation instructions above.
 
     conda create -n learn2branch python=3.5
     conda install cython numpy scikit-learn scipy tqdm natsort joblib
-    # pip install tensorflow-gpu==1.10.1
+    # pip install tensorflow-gpu==1.12
     # pip install cython numpy scikit-learn scipy tqdm natsort joblib
     # LambdaMART
     pip install git+https://github.com/jma127/pyltr@78fa0ebfef67d6594b8415aa5c6136e30a5e3395  
