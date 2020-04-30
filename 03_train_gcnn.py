@@ -125,7 +125,7 @@ def process(model, dataloader, top_k, optimizer=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '--problem',
+        'problem',
         default='tsp',
         help='MILP instance type to process.',
         choices=['setcover', 'cauctions', 'indset', 'tsp',

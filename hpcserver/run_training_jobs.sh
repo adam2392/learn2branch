@@ -12,7 +12,7 @@
 #SBATCH --mail-user=ali39@jhu.edu
 
 #interact -p debug -n 4 -t 1:0:0
-#interact -t 3:0:0 -p gpuk80 -g 1 -N 1 -n 6
+#interact -t 0:30:0 -p gpuk80 -g 1 -N 1 -n 6
 
 ml python/3.6
 ml cmake
@@ -63,7 +63,7 @@ PROBLEM='tsp'
 echo $SEED;
 echo $PROBLEM;
 
-python ./03_train_gcnn.py  $PROBLEM --seed $SEED --sourcedir $DATADIR
+python ./03_train_gcnn.py $PROBLEM --seed $SEED --sourcedir $DATADIR
 # 3. run signularity image w/ python script
 #singularity exec --nv ./hpcserver/sciptflow.sif python3.6 ./03_train_gcnn.py  $PROBLEM --seed $SEED --sourcedir $DATADIR
 
