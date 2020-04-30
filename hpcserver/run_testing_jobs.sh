@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --partition=gpup100
-#SBATCH –gres=gpu:1
-#SBATCH --workdir=/home-1/ali39@jhu.edu/code/
-#SBATCH --output=test.slurm.%j.out
-#SBATCH --error=test.slurm.%j.err
-#SBATCH --job-name=test
-#SBATCH --time=12:0:0
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=12
+#SBATCH -p gpup100
+#SBATCH --gres=gpu:1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=6
+#SBATCH --time=11:30:0
+#SBATCH --workdir=/home-1/ali39@jhu.edu/code/learn2branch
+#SBATCH --output=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.out
+#SBATCH --error=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.err
+#SBATCH --job-name=train1
 #SBATCH --mail-type=END
 #SBATCH --mail-user=ali39@jhu.edu
 
@@ -16,14 +16,24 @@
 #interact -t 3:0:0 -p gpuk80 -g 1 -N 1 -n 6
 
 # load in CUDA/Singularity
-module load cuda/9.2           # also locates matching $CUDA_DRIVER location
-module load singularity/3.5
+ml cuda/9.0           # also locates matching $CUDA_DRIVER location
+ml singularity/3.5
+ml python/3.6
 
-# load in Anaconda and conda environment
-#module restore conda
+# debug prints
+echo $CUDA_VISIBLE_DEVICES
+export SCIPOPTDIR="$HOME/code/scip"
+DATADIR="$HOME/data/learn2branch/"
 
 # double check loaded modules
 ml
+
+cd ..
+SEED=14
+PROBLEM='tsp'
+
+echo $SEED;
+echo $PROBLEM;
 
 ######################################################################
 # Use Singularity

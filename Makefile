@@ -7,7 +7,7 @@ LOCALDIR=./data/sciptflow1.14.sif
 MARCCDIR=ali39@jhu.edu@gateway2.marcc.jhu.edu:/home-1/ali39@jhu.edu/data/learn2branch/
 
 MARCC_RESULTS_DIR=ali39@jhu.edu@gateway2.marcc.jhu.edu:/home-1/ali39@jhu.edu/code/learn2branch/trained_models/
-LOCAL_RESULTS_DIR=./trained_models/
+LOCAL_RESULTS_DIR=./result_trained_models/
 
 MARCC_USER=ali39@jhu.edu
 ssh 							:= ssh $(port)

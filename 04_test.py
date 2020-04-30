@@ -118,7 +118,7 @@ if __name__ == '__main__':
     parser.add_argument(
         'problem',
         help='MILP instance type to process.',
-        choices=['setcover', 'cauctions', 'facilities', 'indset'],
+        choices=['setcover', 'cauctions', 'facilities', 'indset', 'tsp'],
     )
     parser.add_argument(
         '-g', '--gpu',
@@ -144,6 +144,7 @@ if __name__ == '__main__':
         'cauctions': 'cauctions/100_500',
         'facilities': 'facilities/100_100_5',
         'indset': 'indset/500_4',
+        'tsp': 'tsp/100',
     }
     problem_folder = problem_folders[args.problem]
 
