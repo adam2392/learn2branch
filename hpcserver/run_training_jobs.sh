@@ -36,7 +36,7 @@ source ../.venv/bin/activate
 export SCIPOPTDIR="$HOME/code/scip"
 DATADIR="$HOME/data/learn2branch/"
 
-LD_LIBRARY_PATH=/usr/local/lib64/:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$HOME/code/learn2branch/.venv/lib64/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
 gcc --version
 echo $(which python)
