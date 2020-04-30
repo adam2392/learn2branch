@@ -4,7 +4,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=6
 #SBATCH --time=11:30:0
-#SBATCH --workdir=/home-1/ali39@jhu.edu/code/learn2branch
+#SBATCH --workdir=/home-1/ali39@jhu.edu/code/learn2branch/
 #SBATCH --output=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.out
 #SBATCH --error=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.err
 #SBATCH --job-name=train1
@@ -63,7 +63,7 @@ DATADIR="$HOME/data/learn2branch/"
 # 2. redefine SINGULARITY_HOME to mount current working directory to base $HOME
 export SINGULARITY_HOME=$PWD:/home/$USER
 
-cd ..
+#cd ..
 SEED=14
 PROBLEM='tsp'
 
