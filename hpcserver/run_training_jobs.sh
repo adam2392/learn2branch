@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH -p gpup100
-#SBATCH --time=11:30:0
 #SBATCH –-gres=gpu:1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=6
+#SBATCH --time=11:30:0
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/
 #SBATCH --output=./logs/train.slurm.%j.out
 #SBATCH --error=./logs/train.slurm.%j.err
