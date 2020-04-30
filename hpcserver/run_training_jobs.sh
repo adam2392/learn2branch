@@ -59,7 +59,7 @@ DATADIR="$HOME/data/learn2branch/"
 export SINGULARITY_HOME=$PWD:/home/$USER
 
 cd ..
-SEED=70
+SEED=0
 PROBLEM='cauctions'
 
 echo $SEED;
