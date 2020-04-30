@@ -19,7 +19,7 @@
 # https://marcc-hpc.github.io/esc/common/tensorflow-latest
 ml gcc/6.4.0
 #ml python/3.6
-module load cuda/10.0          # also locates matching $CUDA_DRIVER location
+ml cuda/10.0          # also locates matching $CUDA_DRIVER location
 #module load singularity/3.5
 
 # load in Anaconda and conda environment
@@ -36,8 +36,9 @@ source ../.venv/bin/activate
 export SCIPOPTDIR="$HOME/code/scip"
 DATADIR="$HOME/data/learn2branch/"
 
-LD_LIBRARY_PATH=$HOME/code/learn2branch/.venv/lib64/:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH="$HOME/code/learn2branch/.venv/lib64/":$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/lib:/usr/lib:$LD_LIBRARY_PATH
 gcc --version
 echo $(which python)
 
