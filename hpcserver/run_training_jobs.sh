@@ -20,8 +20,7 @@
 ml gcc/6.4.0
 #ml python/3.6
 module load cuda/10.0          # also locates matching $CUDA_DRIVER location
-module load singularity/3.5
-
+#module load singularity/3.5
 
 # load in Anaconda and conda environment
 #module restore conda
@@ -37,6 +36,7 @@ source ../.venv/bin/activate
 export SCIPOPTDIR="$HOME/code/scip"
 DATADIR="$HOME/data/learn2branch/"
 
+gcc --version
 echo $(which python)
 
 # actual bash commands to submit the job
