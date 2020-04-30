@@ -141,7 +141,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '-s', '--seed',
         help='Random generator seed.',
-        type=utilities.valid_seed,
+        type=valid_seed,
         default=0,
     )
     parser.add_argument(
