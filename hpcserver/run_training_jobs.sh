@@ -16,6 +16,7 @@
 ml python/3.6
 ml cmake
 ml cuda/9.0
+ml singularity/3.5
 
 # load in CUDA/Singularity
 # ml cuda/10.1
