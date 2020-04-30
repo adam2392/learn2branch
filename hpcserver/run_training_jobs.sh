@@ -18,7 +18,7 @@
 # ml cuda/10.1
 # https://marcc-hpc.github.io/esc/common/tensorflow-latest
 ml gcc/6.4.0
-ml python/3.6
+#ml python/3.6
 module load cuda/10.0          # also locates matching $CUDA_DRIVER location
 module load singularity/3.5
 
@@ -36,6 +36,8 @@ echo $(which python)
 source ../.venv/bin/activate
 export SCIPOPTDIR="$HOME/code/scip"
 DATADIR="$HOME/data/learn2branch/"
+
+echo $(which python)
 
 # actual bash commands to submit the job
 ######################################################################
