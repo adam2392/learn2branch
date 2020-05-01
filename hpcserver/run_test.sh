@@ -4,9 +4,9 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=6
 #SBATCH --time=3:00:0
-#SBATCH --workdir=/home-1/ali39@jhu.edu/code/learn2branch
-#SBATCH --output=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.out
-#SBATCH --error=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.err
+#SBATCH --workdir=/home-1/ali39@jhu.edu/code/learn2branch/
+#SBATCH --output=/home-1/ali39@jhu.edu/code/learn2branch/logs/test.slurm.%j.out
+#SBATCH --error=/home-1/ali39@jhu.edu/code/learn2branch/logs/test.slurm.%j.err
 #SBATCH --job-name=test1
 
 ml python/3.6

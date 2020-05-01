@@ -294,6 +294,7 @@ if __name__ == '__main__':
     seeds = [int(item) for item in args.seeds.split(',')]
     gcnn_models = ['baseline']
     other_models = ['extratrees_gcnn_agg', 'lambdamart_khalil', 'svmrank_khalil']
+    other_models = []
     test_batch_size = 128
     top_k = [1, 3, 5, 10]
 

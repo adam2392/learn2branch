@@ -156,7 +156,8 @@ if __name__ == '__main__':
     #seeds = [0, 1, 2, 3, 4]
     seeds = [int(item) for item in args.seeds.split(',')]
     gcnn_models = ['baseline']
-    other_models = ['extratrees_gcnn_agg', 'lambdamart_khalil',
+    other_models = [
+        # 'extratrees_gcnn_agg', 'lambdamart_khalil',
                     # 'svmrank_khalil'
                     ]
     internal_branchers = ['relpscost']
