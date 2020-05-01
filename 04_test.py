@@ -2,6 +2,7 @@ import os
 import sys
 import importlib
 import argparse
+from pathlib import Path
 import csv
 import numpy as np
 import time
@@ -14,10 +15,111 @@ import tensorflow.contrib.eager as tfe
 
 import svmrank
 
-#import utilities
+# from utilities import compute_extended_variable_features, preprocess_variable_features
 import pickle
 
 from utilities_tf import load_batch_gcnn
+
+
+def preprocess_variable_features(features, interaction_augmentation, normalization):
+    """
+    Features preprocessing following Khalil et al. (2016) Learning to Branch in Mixed Integer Programming.
+
+    Parameters
+    ----------
+    features : 2D np.ndarray
+        The candidate variable features to preprocess.
+    interaction_augmentation : bool
+        Whether to augment features with 2-degree interactions (useful for linear models such as SVMs).
+    normalization : bool
+        Wether to normalize features in [0, 1] (i.e., query-based normalization).
+
+    Returns
+    -------
+    variable_features : 2D np.ndarray
+        The preprocessed variable features.
+    """
+    # 2-degree polynomial feature augmentation
+    if interaction_augmentation:
+        interactions = (
+            np.expand_dims(features, axis=-1) * np.expand_dims(features, axis=-2)
+        ).reshape((features.shape[0], -1))
+        features = np.concatenate([features, interactions], axis=1)
+
+    # query-based normalization in [0, 1]
+    if normalization:
+        features -= features.min(axis=0, keepdims=True)
+        max_val = features.max(axis=0, keepdims=True)
+        max_val[max_val == 0] = 1
+        features /= max_val
+
+    return features
+
+
+def compute_extended_variable_features(state, candidates):
+    """
+    Utility to extract variable features only from a bipartite state representation.
+
+    Parameters
+    ----------
+    state : dict
+        A bipartite state representation.
+    candidates: list of ints
+        List of candidate variables for which to compute features (given as indexes).
+
+    Returns
+    -------
+    variable_states : np.array
+        The resulting variable states.
+    """
+    constraint_features, edge_features, variable_features = state
+    constraint_features = constraint_features["values"]
+    edge_indices = edge_features["indices"]
+    edge_features = edge_features["values"]
+    variable_features = variable_features["values"]
+
+    cand_states = np.zeros(
+        (
+            len(candidates),
+            variable_features.shape[1]
+            + 3 * (edge_features.shape[1] + constraint_features.shape[1]),
+        )
+    )
+
+    # re-order edges according to variable index
+    edge_ordering = edge_indices[1].argsort()
+    edge_indices = edge_indices[:, edge_ordering]
+    edge_features = edge_features[edge_ordering]
+
+    # gather (ordered) neighbourhood features
+    nbr_feats = np.concatenate(
+        [edge_features, constraint_features[edge_indices[0]]], axis=1
+    )
+
+    # split neighborhood features by variable, along with the corresponding variable
+    var_cuts = np.diff(edge_indices[1]).nonzero()[0] + 1
+    nbr_feats = np.split(nbr_feats, var_cuts)
+    nbr_vars = np.split(edge_indices[1], var_cuts)
+    assert all([all(vs[0] == vs) for vs in nbr_vars])
+    nbr_vars = [vs[0] for vs in nbr_vars]
+
+    # process candidate variable neighborhoods only
+    for var, nbr_id, cand_id in zip(
+        *np.intersect1d(nbr_vars, candidates, return_indices=True)
+    ):
+        cand_states[cand_id, :] = np.concatenate(
+            [
+                variable_features[var, :],
+                nbr_feats[nbr_id].min(axis=0),
+                nbr_feats[nbr_id].mean(axis=0),
+                nbr_feats[nbr_id].max(axis=0),
+            ]
+        )
+
+    cand_states[np.isnan(cand_states)] = 0
+
+    return cand_states
+
 
 def load_flat_samples(filename, feat_type, label_type, augment_feats, normalize_feats):
     with gzip.open(filename, "rb") as file:
@@ -205,8 +307,8 @@ if __name__ == '__main__':
     }
     problem_folder = problem_folders[args.problem]
 
-    if args.problem == 'setcover':
-        gcnn_models += ['mean_convolution', 'no_prenorm']
+    # if args.problem == 'setcover':
+    #     gcnn_models += ['mean_convolution', 'no_prenorm']
 
     result_file = f"results/{args.problem}_test_{time.strftime('%Y%m%d-%H%M%S')}"
 
