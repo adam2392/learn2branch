@@ -181,6 +181,13 @@ if __name__ == '__main__':
         instances += [{'type': 'medium', 'path': f"data/instances/indset/transfer_1000_4/instance_{i+1}.lp"} for i in range(20)]
         instances += [{'type': 'big', 'path': f"data/instances/indset/transfer_1500_4/instance_{i+1}.lp"} for i in range(20)]
 
+    elif args.problem == 'tsp':
+        instances += [{'type': 'small', 'path': f"data/instances/indset/transfer_100/instance_{i + 1}.lp"} for i in
+                      range(20)]
+        instances += [{'type': 'medium', 'path': f"data/instances/indset/transfer_150/instance_{i + 1}.lp"} for i in
+                      range(20)]
+        instances += [{'type': 'big', 'path': f"data/instances/indset/transfer_200/instance_{i + 1}.lp"} for i in
+                      range(20)]
     else:
         raise NotImplementedError
 

@@ -3,11 +3,11 @@
 #SBATCH --gres=gpu:1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=6
-#SBATCH --time=5:00:0
+#SBATCH --time=3:00:0
 #SBATCH --workdir=/home-1/ali39@jhu.edu/code/learn2branch
 #SBATCH --output=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.out
 #SBATCH --error=/home-1/ali39@jhu.edu/code/learn2branch/logs/train.slurm.%j.err
-#SBATCH --job-name=eval1
+#SBATCH --job-name=test1
 
 ml python/3.6
 ml cmake
@@ -43,16 +43,20 @@ export SINGULARITY_HOME=$PWD:/home/$USER
 #cd ..
 #SEED='210,211,212'
 SEED='0,1,2,22,202,206,211' # cauctions
-SEED='12,209' # indset
-SEED='210' # set cover
-SEED='207' # tsp
 PROBLEM='cauctions'
+
+#SEED='12,209' # indset
+#PROBLEM='indset'
+
+#SEED='210' # set cover
+#PROBLEM='setcover'
+
+#SEED='207' # tsp
+#PROBLEM='tsp'
 
 echo $SEED;
 echo $PROBLEM;
 
-#python ./04_test.py $PROBLEM --seed $SEED --sourcedir $DATADIR
-# 3. run signularity image w/ python script
-singularity exec -B /scratch/ --nv ./hpcserver/sciptflow.sif python3.6 ./05_evaluate.py $PROBLEM --seed $SEED --sourcedir $DATADIR
+python ./04_test.py $PROBLEM --seed $SEED --sourcedir $DATADIR
 
 exit
