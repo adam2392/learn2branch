@@ -12,7 +12,7 @@ import gzip
 import tensorflow as tf
 import tensorflow.contrib.eager as tfe
 
-import svmrank
+# import svmrank
 
 # from utilities import compute_extended_variable_features, preprocess_variable_features
 import pickle
