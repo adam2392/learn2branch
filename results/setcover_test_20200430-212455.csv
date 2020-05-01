@@ -1,0 +1,2 @@
+policy,seed,acc@1,acc@3,acc@5,acc@10
+gcnn:baseline,210,0.495,0.67,0.765,0.87
