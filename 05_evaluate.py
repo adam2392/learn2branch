@@ -147,7 +147,7 @@ if __name__ == '__main__':
         '--seeds', 
         help='delimited seeds',
         type=str,
-        defaut='0'
+        default='0'
     )
     args = parser.parse_args()
 
